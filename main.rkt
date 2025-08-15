@@ -1,7 +1,10 @@
 #!/usr/bin/env racket
 #lang sketching
 
+
 (require "demos/demos.rkt")
+(require racket/cmdline)
+(require racket/string)
 
 
 (define WIDTH 1920)
@@ -16,6 +19,8 @@
 
 
 (define demos-list (list 'globe 'cube 'waves 'lissajous 'starfield 'spiral 'tunnel 'metaballs 'smiley 'lambdas 'pipes 'boids 'snowing 'dvd 'ripple))
+(define single-demo (box #f))
+
 
 (define (shuffle-list lst)
   (let* ([v (list->vector lst)]
@@ -30,6 +35,7 @@
         (vector-set! v j tmp)))
     (vector->list v)))
 
+
 (define shuffled-demos (box (shuffle-list demos-list)))
 (define demo-index (box 0))
 (define last-demo (box #f))
@@ -37,21 +43,23 @@
 (define next-switch (box (+ (unbox last-switch) (+ 10000 (random 20000)))))
 
 
-
 (define (draw)
   (define now (current-inexact-milliseconds))
-  (when (> now (unbox next-switch))
-    (set-box! demo-index (+ (unbox demo-index) 1))
-    (when (>= (unbox demo-index) (length (unbox shuffled-demos)))
-      (set-box! shuffled-demos (shuffle-list demos-list))
-      (set-box! demo-index 0))
-    (set-box! last-switch now)
-    (set-box! next-switch (+ now (+ 10000 (random 20000)))) )
-  (define current-demo (list-ref (unbox shuffled-demos) (unbox demo-index)))
+  (define current-demo
+    (if (unbox single-demo)
+        (unbox single-demo)
+        (begin
+          (when (> now (unbox next-switch))
+            (set-box! demo-index (+ (unbox demo-index) 1))
+            (when (>= (unbox demo-index) (length (unbox shuffled-demos)))
+              (set-box! shuffled-demos (shuffle-list demos-list))
+              (set-box! demo-index 0))
+            (set-box! last-switch now)
+            (set-box! next-switch (+ now (+ 10000 (random 20000)))) )
+          (list-ref (unbox shuffled-demos) (unbox demo-index)))))
   (when (not (equal? (unbox last-demo) current-demo))
     (displayln (string-append "Active simulation: " (symbol->string current-demo)))
     (set-box! last-demo current-demo))
-
 
   (case current-demo
     [(globe) (draw-globe (unbox bg-color))]
@@ -69,6 +77,27 @@
     [(snowing) (draw-snowing (unbox bg-color))]
     [(dvd) (draw-dvd)]
     [(ripple) (draw-ripple-demo)]))
+(define (set-demo-by-symbol sym)
+  (when (member sym demos-list)
+    (set-box! single-demo sym)
+    (set-box! last-demo #f)
+    (displayln (string-append "Switched to demo: " (symbol->string sym)))
+    #t))
+
+(define (repl-loop)
+  (displayln "Demo REPL. Type a demo name (e.g. globe, cube, waves) or 'exit' to quit.")
+  (let loop ()
+    (display "> ")
+    (flush-output)
+    (define input (string-trim (read-line)))
+    (cond
+      [(or (eof-object? input) (equal? input "exit")) (displayln "Exiting REPL.")]
+      [else
+       (define sym (string->symbol input))
+       (if (set-demo-by-symbol sym)
+           (void)
+           (displayln "Unknown demo name."))
+       (loop)])))
 
 
 (define (on-key-pressed)
@@ -84,6 +113,29 @@
       [(or (char=? key #\g) (char=? key #\G))
        (set-box! bg-color (if (equal? (unbox bg-color) BLACK) GREEN-SCREEN BLACK))])))
 
+
 (define (setup)
   (size WIDTH HEIGHT)
   (frame-rate FPS))
+
+;; Entry point
+(define (main)
+  (define run-repl #f)
+  (define demo-name #f)
+  (command-line
+    #:program "demostream"
+    #:once-each
+    [("--repl") "Start in REPL mode" (set! run-repl #t)]
+    [("--demo") name "Run a specific demo by name" (set! demo-name name)])
+  (cond
+    [run-repl (thread repl-loop)]
+    [demo-name
+     (define sym (string->symbol demo-name))
+     (if (member sym demos-list)
+         (begin (set-box! single-demo sym)
+                (set-box! last-demo #f))
+         (begin (displayln (string-append "Unknown demo: " demo-name))
+                (exit 1)))])
+  (void))
+
+(main)
