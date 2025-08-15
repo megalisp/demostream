@@ -15,7 +15,7 @@
 (define bg-color (box BLACK))
 
 
-(define demos-list (list 'globe 'cube 'waves 'lissajous 'starfield 'spiral 'tunnel 'metaballs))
+(define demos-list (list 'globe 'cube 'waves 'lissajous 'starfield 'spiral 'tunnel 'metaballs 'smiley 'lambdas 'pipes 'boids 'snowing 'dvd 'ripple))
 
 (define (shuffle-list lst)
   (let* ([v (list->vector lst)]
@@ -61,9 +61,14 @@
     [(starfield) (draw-starfield (unbox bg-color))]
     [(spiral) (draw-spiral (unbox bg-color))]
     [(tunnel) (draw-tunnel (unbox bg-color))]
-    [(metaballs) (draw-metaballs WIDTH HEIGHT (unbox bg-color))]))
-
-
+    [(metaballs) (draw-metaballs WIDTH HEIGHT (unbox bg-color))]
+    [(smiley) (draw-smiley (unbox bg-color))]
+    [(lambdas) (draw-lambdas (unbox bg-color))]
+    [(pipes) (draw-pipes (unbox bg-color))]
+    [(boids) (draw-boids (unbox bg-color))]
+    [(snowing) (draw-snowing (unbox bg-color))]
+    [(dvd) (draw-dvd)]
+    [(ripple) (draw-ripple-demo)]))
 
 
 (define (on-key-pressed)

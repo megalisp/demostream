@@ -1,21 +1,35 @@
 
 #lang racket
 
-(require "globe.rkt"
+ (require "globe.rkt"
          "cube.rkt"
          "waves.rkt"
          "lissajous.rkt"
          "starfield.rkt"
          "spiral.rkt"
          "tunnel.rkt"
-         "metaballs.rkt")
+         "metaballs.rkt"
+         "smiley.rkt"
+         "lambdas.rkt"
+         "pipes.rkt"
+         "boids.rkt"
+         "snowing.rkt"
+         "dvd-screensaver.rkt"
+         "ripple.rkt")
 
 
 (provide (all-from-out "globe.rkt"
-                      "cube.rkt"
-                      "waves.rkt"
-                      "lissajous.rkt"
-                      "starfield.rkt"
-                      "spiral.rkt"
-                      "tunnel.rkt"
-                      "metaballs.rkt"))
+                     "cube.rkt"
+                     "waves.rkt"
+                     "lissajous.rkt"
+                     "starfield.rkt"
+                     "spiral.rkt"
+                     "tunnel.rkt"
+                     "metaballs.rkt"
+                     "smiley.rkt"
+                     "lambdas.rkt"
+                     "pipes.rkt"
+                     "boids.rkt"
+                     "snowing.rkt"
+                     "dvd-screensaver.rkt"
+                     "ripple.rkt"))
