@@ -77,6 +77,7 @@
     [(snowing) (draw-snowing (unbox bg-color))]
     [(dvd) (draw-dvd)]
     [(ripple) (draw-ripple-demo)]))
+
 (define (set-demo-by-symbol sym)
   (when (member sym demos-list)
     (set-box! single-demo sym)
@@ -84,14 +85,31 @@
     (displayln (string-append "Switched to demo: " (symbol->string sym)))
     #t))
 
+(define (set-auto-mode)
+  (set-box! single-demo #f)
+  (set-box! shuffled-demos (shuffle-list demos-list))
+  (set-box! demo-index 0)
+  (set-box! last-demo #f)
+  (displayln "Switched to auto shuffle mode."))
+
+
+
+
 (define (repl-loop)
-  (displayln "Demo REPL. Type a demo name (e.g. globe, cube, waves) or 'exit' to quit.")
+  (displayln "Demo REPL. Type a demo name (e.g. globe, cube, waves), 'auto' for shuffle, 'demos' to list, or 'exit'/'quit' to quit.")
   (let loop ()
     (display "> ")
     (flush-output)
     (define input (string-trim (read-line)))
     (cond
-      [(or (eof-object? input) (equal? input "exit")) (displayln "Exiting REPL.")]
+      [(or (eof-object? input) (equal? input "exit") (equal? input "quit"))
+       (displayln "Exiting REPL and program.")
+       (exit 0)]
+      [(equal? input "auto") (set-auto-mode) (loop)]
+      [(equal? input "demos")
+       (displayln (string-append "Available demos: "
+                                 (string-join (map symbol->string demos-list) ", ")))
+       (loop)]
       [else
        (define sym (string->symbol input))
        (if (set-demo-by-symbol sym)
@@ -120,7 +138,7 @@
 
 ;; Entry point
 (define (main)
-  (define run-repl #f)
+  (define run-repl #t)
   (define demo-name #f)
   (command-line
     #:program "demostream"
