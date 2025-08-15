@@ -34,7 +34,7 @@
 (define demo-index (box 0))
 (define last-demo (box #f))
 (define last-switch (box (current-inexact-milliseconds)))
-(define next-switch (box (+ (unbox last-switch) (+ 3000 (random 7000)))))
+(define next-switch (box (+ (unbox last-switch) (+ 10000 (random 20000)))))
 
 
 
@@ -46,7 +46,7 @@
       (set-box! shuffled-demos (shuffle-list demos-list))
       (set-box! demo-index 0))
     (set-box! last-switch now)
-    (set-box! next-switch (+ now (+ 3000 (random 7000)))))
+    (set-box! next-switch (+ now (+ 10000 (random 20000)))) )
   (define current-demo (list-ref (unbox shuffled-demos) (unbox demo-index)))
   (when (not (equal? (unbox last-demo) current-demo))
     (displayln (string-append "Active simulation: " (symbol->string current-demo)))
@@ -79,8 +79,8 @@
        (when (>= (unbox demo-index) (length (unbox shuffled-demos)))
          (set-box! shuffled-demos (shuffle-list demos-list))
          (set-box! demo-index 0))
-       (set-box! last-switch (current-inexact-milliseconds))
-       (set-box! next-switch (+ (unbox last-switch) (+ 3000 (random 7000))))]
+  (set-box! last-switch (current-inexact-milliseconds))
+  (set-box! next-switch (+ (unbox last-switch) (+ 10000 (random 20000))))]
       [(or (char=? key #\g) (char=? key #\G))
        (set-box! bg-color (if (equal? (unbox bg-color) BLACK) GREEN-SCREEN BLACK))])))
 
