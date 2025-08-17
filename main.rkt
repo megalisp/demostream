@@ -1,12 +1,12 @@
 #!/usr/bin/env racket
 #lang sketching
-(provide shuffle-list demos-list single-demo demo-index shuffled-demos draw demo-hold? bg-color ORANGE set-box! unbox)
-(provide demo!set demo!shuffle demo!skip demo!prev demo!hold demo!list demo!next  demo!script)
 
 (require "demos/demos.rkt")
 (require racket/cmdline)
 (require racket/string)
 
+(provide shuffle-list demos-list single-demo demo-index shuffled-demos draw demo-hold? bg-color ORANGE set-box! unbox)
+(provide demo!set demo!shuffle demo!skip demo!prev demo!hold demo!list demo!next  demo!script)
 
 (define WIDTH 1920)
 (define HEIGHT 1080)
@@ -72,14 +72,15 @@
     [(starfield) (draw-starfield (unbox bg-color))]
     [(spiral) (draw-spiral (unbox bg-color))]
     [(tunnel) (draw-tunnel (unbox bg-color))]
-    [(metaballs) (draw-metaballs WIDTH HEIGHT (unbox bg-color))]
+    [(metaballs) (draw-metaballs (unbox bg-color))]
     [(smiley) (draw-smiley (unbox bg-color))]
     [(lambdas) (draw-lambdas (unbox bg-color))]
     [(pipes) (draw-pipes (unbox bg-color))]
     [(boids) (draw-boids (unbox bg-color))]
     [(snowing) (draw-snowing (unbox bg-color))]
-    [(dvd) (draw-dvd)]
-    [(ripple) (draw-ripple-demo)]))
+    [(dvd) (draw-dvd (unbox bg-color))]
+    [(ripple) (draw-ripple (unbox bg-color))]))
+
 
 ;; --- Demo! REPL commands for use in xrepl ---
 

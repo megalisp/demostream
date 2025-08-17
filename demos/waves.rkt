@@ -2,7 +2,6 @@
 (require sketching)
 (provide draw-waves)
 
-;; Accepts a background color argument
 (define (draw-waves bg)
   (background bg)
   (stroke (color 255 140 0))

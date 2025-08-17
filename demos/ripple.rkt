@@ -1,6 +1,15 @@
 #lang racket
 (require sketching)
+(provide draw-ripple)
 
+(define ripple-max-total 5)
+(define ripple-min-max-r 300)
+(define ripple-max-max-r 500)
+(define ripple-min-alpha 255)(provide draw-ripple)
+
+(define ripple-weight 5)
+(define ripple-ring-step 40)
+(define ripple-ring-count 6)
 (define ripples (box '()))
 
 
@@ -10,14 +19,15 @@
 
 
 ;; Spawn at random locations
+
 (define (add-ripple)
-  (when (< (length (unbox ripples)) 5)
+  (when (< (length (unbox ripples)) ripple-max-total)
     (let try-place ()
       (let* ([x (random (width))]
              [y (random (height))]
              [r 0]
-             [max-r (+ 300 (random 200))]
-             [alpha 255]
+             [max-r (+ ripple-min-max-r (random (- ripple-max-max-r ripple-min-max-r)))]
+             [alpha ripple-min-alpha]
              [ok? (for/and ([v (in-list (unbox ripples))])
                      (> (distance x y (vector-ref v 0) (vector-ref v 1))
                         (+ max-r (vector-ref v 3))))])
@@ -52,8 +62,9 @@
     (set-box! ripples
       (for/list ([v filtered] [idx (in-naturals)] #:unless (member idx indices-to-remove)) v))))
 
-(define (draw-ripples)
-  (background (color 0 0 0 32))
+;; Accepts a background color argument
+(define (draw-ripples bg)
+  (background bg)
   (for ([v (in-list (unbox ripples))])
     (let* ([x (vector-ref v 0)]
            [y (vector-ref v 1)]
@@ -62,13 +73,12 @@
            [alpha (vector-ref v 4)])
       (no-fill)
       (stroke (color 255 140 0)) ; solid orange, no alpha gradient
-      (stroke-weight 5)
-      (for ([i (in-range 0 6)]) ; more rings
-        (ellipse x y (* 2 (+ r (* i 40))) (* 2 (+ r (* i 40))))))))
+  (stroke-weight ripple-weight)
+      (for ([i (in-range 0 ripple-ring-count)]) ; more rings
+        (ellipse x y (* 2 (+ r (* i ripple-ring-step))) (* 2 (+ r (* i ripple-ring-step))))))))
 
-(define (draw-ripple-demo)
+(define (draw-ripple bg)
   (when (< (random 1.0) 0.08) (add-ripple))
   (update-ripples)
-  (draw-ripples))
+  (draw-ripples bg))
 
-(provide draw-ripple-demo)

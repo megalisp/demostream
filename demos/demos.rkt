@@ -14,7 +14,7 @@
          "pipes.rkt"
          "boids.rkt"
          "snowing.rkt"
-         "dvd-screensaver.rkt"
+         "dvd.rkt"
          "ripple.rkt")
 
 
@@ -31,5 +31,5 @@
                      "pipes.rkt"
                      "boids.rkt"
                      "snowing.rkt"
-                     "dvd-screensaver.rkt"
+                     "dvd.rkt"
                      "ripple.rkt"))
